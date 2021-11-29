@@ -11,6 +11,7 @@ class QuoridorGame(QWidget):
         self.setGeometry(400, 500, 800, 500) # 조절해야함 4k 기준
         # init Layout
         quoridorLayout = QGridLayout()
+        quoridorLayout.setSpacing(4)
         self.setLayout(quoridorLayout)
 
         # init board_button
@@ -65,15 +66,21 @@ class QuoridorGame(QWidget):
         
         self.mouseXpos = 0
         self.mouseYpos = 0
-        x = pos.x()
-        y = pos.y()
+        x = pos.x() - 10
+        y = pos.y() - 9
+        # x
+        # 0번째 2 ~ 29 1번째 30 ~ 58
+        # 8번째 233 ~ 261 16번째 465 ~ 493 
 
-        self.mouseXpos = (int(x/31)) #43을 조절해야함
-        self.mouseYpos = (int(y/31)) #43을 조절해야함 지금은 4k 기준 
+        # y
+        # 0번 2 ~ 29 1번 30 ~ 56
+        # 16번 435 ~ 461
+        self.mouseXpos = (x//28) #43을 조절해야함
+        self.mouseYpos = (y//27) #43을 조절해야함 지금은 4k 기준 
         if self.mouseXpos<=16 and self.mouseYpos<=16:
             self.wallcheker(self.mouseXpos,self.mouseYpos)
         if D:
-            text = f"x: {x+11}, y: {y+11}, gridx: {self.mouseXpos}, gridy: {self.mouseYpos}"
+            text = f"x: {x}, y: {y}, gridx: {self.mouseXpos}, gridy: {self.mouseYpos}"
             print(text)
 
     def startGame(self):
