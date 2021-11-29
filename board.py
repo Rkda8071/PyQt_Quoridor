@@ -7,6 +7,22 @@ class Board:
         self.status[16][8] = 3
     
     # 벽 설치!
+    def wall_check(self, y, x):
+        # 범위 확인
+        if (not (y%2 and x%2)) or x<=0 or y<=0 or x>=16 or y>=16:
+            return False
+        # 놓을 곳이 비어있는지(벽이 이미 설치되어있는지) 확인
+        for tmp in [0, -1, 1]:
+            if self.status[y + tmp*self.direction][x + tmp*(1 - self.direction)] == 1:
+                return False
+        # 모든 경로가 막혀있나? bfs로 확인!
+        (i1,j1) = self.find_board(2)
+        (i2,j2) = self.find_board(3)
+        if self.bfs(i1,j1,16) and self.bfs(i2,j2,0):
+            return True
+        # 이동할 수 있는 경로가 막힙니다!
+        return False
+
     def wall_clicked(self, y, x):
         # 범위 확인
         if (not (y%2 and x%2)) or x<=0 or y<=0 or x>=16 or y>=16:
@@ -38,7 +54,6 @@ class Board:
                 yy = y + tmp[i]
                 xx = x + tmp[3-i]
                 if not (yy >= 0 and yy < 17 and xx >= 0 and xx < 17 and self.status[yy][xx] == 0 and chk[yy+tmp[i]][xx+tmp[3-i]] == 0): continue
-                print(yy,xx)
                 chk[yy+tmp[i]][xx+tmp[3-i]] = 1
                 q.append((yy+tmp[i],xx+tmp[3-i]))
             pass

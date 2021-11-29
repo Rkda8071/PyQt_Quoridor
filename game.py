@@ -1,28 +1,26 @@
 from PyQt5 import QtWidgets
 from PyQt5.QtCore import Qt
-from PyQt5.QtWidgets import QApplication, QGestureRecognizer, QWidget
-from PyQt5.QtWidgets import QLayout, QGridLayout
-from PyQt5.QtWidgets import QTextEdit, QLineEdit, QToolButton
-from PyQt5.QtWidgets import (QWidget, QPushButton,
-    QHBoxLayout, QVBoxLayout, QApplication, QLabel,
-    QComboBox, QTextEdit, QLineEdit)
-
+from PyQt5.QtWidgets import *
 from board import Board
+
+D = False
 
 class QuoridorGame(QWidget):
 
     def __init__(self):
         super().__init__()
+        self.setGeometry(400, 500, 1000,700)
         # init Layout
         quoridorLayout = QGridLayout()
         self.setLayout(quoridorLayout)
-        
+
         # init board_button
         self.board_button = []
         for y in range(17):
             tmp_board = []
             for x in range(17):
                 tmp_button = QPushButton()
+                tmp_button.setMaximumSize(34,34) #boxsize 제한 34가 ui그리드에 딱 맞는 크기
                 tmp_button.clicked.connect(self.btnclick)
                 if y%2 or x%2:
                     tmp_button.setStyleSheet("background-color: gray")
@@ -55,7 +53,25 @@ class QuoridorGame(QWidget):
         self.player2block.setReadOnly(True)
         quoridorLayout.addWidget(self.player2block, 16, 18)
         self.startGame()
+        
+        self.setMouseTracking(True) #mouse 현재 위치 픽셀 계산
 
+    def mouseMoveEvent(self, pos):
+        
+        self.mouseXpos = 0
+        self.mouseYpos = 0
+        x = pos.x()
+        y = pos.y()
+        x -= 11
+        y -= 11
+        self.mouseXpos = int(x/43)
+        self.mouseYpos = int(y/43)
+        text = "x: {0}, y: {1} ".format(self.mouseXpos, self.mouseYpos)
+        if self.mouseXpos<=16 and self.mouseYpos<=16:
+            self.wallcheker(self.mouseXpos,self.mouseYpos)
+        if D:
+            print(text)
+ 
     def startGame(self):
         self.board = Board()
         self.turn = 2 # player1
@@ -63,8 +79,8 @@ class QuoridorGame(QWidget):
         self.color_4()
 
         self.wall_count = [10,10]
-        self.player1block.setText(str(self.wall_count[0]))
-        self.player2block.setText(str(self.wall_count[1]))
+        self.player1block.setText("player1 은 벽 개수 : "+str(self.wall_count[0]))
+        self.player2block.setText("player2 남은 벽 개수 : "+str(self.wall_count[1]))
         
         self.currentturn.setText("Red turn")
         self.currentturn.setStyleSheet("color : Red")
@@ -79,13 +95,13 @@ class QuoridorGame(QWidget):
 
     def btnclick(self):
         (y, x) = self.find_btn(self.sender())
-        print(y, x)
-
+        if D:
+            print(f"mouse clicked x: {x}, y: {y} ")
         if y % 2 or x % 2:  # 벽 세우는 곳임
             if self.wall_count[self.turn - 2] <= 0:
                 self.statusText.setText("벽이 부족합니다!")
                 # 벽이 없습니다
-                return
+                return 
             if self.board.wall_clicked(y, x):
                 # 설치 & status 변경
                 for tmp in [0, -1, 1]:
@@ -99,8 +115,6 @@ class QuoridorGame(QWidget):
                 self.next_turn()
             else:
                 self.statusText.setText("설치 불가능한 지역입니다!")
-
-
         else:  # 말이 움직이는 곳임
             if self.board.player_clicked(y, x):
                 #말 이동
@@ -111,6 +125,20 @@ class QuoridorGame(QWidget):
                 self.board_button[i][j].setStyleSheet("background-color : white")
                 self.next_turn()
     
+    
+    def wallcheker(self,x,y):  #벽을 놓을수 있는 공간에 색칠해주기
+        for i in range(17):
+            for j in range(17):
+                if (i%2 or j%2) and self.board.status[i][j] == 0:     
+                        self.board_button[i][j].setStyleSheet("background-color : gray")
+        
+        if y % 2 or x % 2:  
+            if self.board.wall_check(y, x):    
+                for tmp in [0, -1, 1]:
+                    yy = y + tmp*self.board.direction
+                    xx = x + tmp*(1 - self.board.direction)
+                    self.board_button[yy][xx].setStyleSheet("background-color : yellow")
+
     def find_btn(self, btn):
         for i in range(17):
             for j in range(17):
@@ -131,8 +159,8 @@ class QuoridorGame(QWidget):
         self.board.whereCanMove(self.turn)
         self.color_4()
         
-        self.player1block.setText(str(self.wall_count[0]))
-        self.player2block.setText(str(self.wall_count[1]))
+        self.player1block.setText("1번 플레이어 남은 벽 개수 : " + str(self.wall_count[0]))
+        self.player2block.setText("2번 플레이어 남은 벽 개수 : " + str(self.wall_count[1]))
         
         self.statusText.setText("")
         if self.turn == 2:
@@ -164,3 +192,13 @@ if __name__ == '__main__':
     game = QuoridorGame()
     game.show()
     sys.exit(app.exec_())
+
+
+
+'''
+for x in range(17):
+        for y in range(17):
+            print(self.board.status[x][y],end=" ")
+        print("\n")
+    print("\n\n\n")
+''' 
