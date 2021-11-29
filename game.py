@@ -8,7 +8,7 @@ class QuoridorGame(QWidget):
 
     def __init__(self):
         super().__init__()
-        self.setGeometry(400, 500, 1000,700) # 조절해야함 4k 기준
+        self.setGeometry(400, 500, 800, 500) # 조절해야함 4k 기준
         # init Layout
         quoridorLayout = QGridLayout()
         self.setLayout(quoridorLayout)
@@ -19,7 +19,7 @@ class QuoridorGame(QWidget):
             tmp_board = []
             for x in range(17):
                 tmp_button = QPushButton()
-                tmp_button.setMaximumSize(34,34) #boxsize 제한 34가 ui그리드에 딱 맞는 크기 
+                tmp_button.setMaximumSize(25,25) #boxsize 제한 34가 ui그리드에 딱 맞는 크기 
                 tmp_button.clicked.connect(self.btnclick)
                 if y%2 or x%2:
                     tmp_button.setStyleSheet("background-color: gray")
@@ -33,24 +33,30 @@ class QuoridorGame(QWidget):
         # Display widget for current status
         self.player1block = QLineEdit()
         self.player1block.setReadOnly(True)
+        self.player1block.setMaximumSize(300,25)
         quoridorLayout.addWidget(self.player1block, 0, 18)
         
         self.statusText = QLineEdit()
         self.statusText.setReadOnly(True)
+        self.statusText.setMaximumSize(300,25)
         quoridorLayout.addWidget(self.statusText, 6, 18)
         
         self.change_btn = QToolButton()
         self.change_btn.setText("가로")
         self.change_btn.clicked.connect(self.change_dir)
+        self.change_btn.setMaximumSize(300,25)
         quoridorLayout.addWidget(self.change_btn, 8, 18)
         
         self.currentturn = QLineEdit()
         quoridorLayout.addWidget(self.currentturn, 10, 18)
+        self.currentturn.setMaximumSize(300,25)
 
 
         self.player2block = QLineEdit()
         self.player2block.setReadOnly(True)
+        self.player2block.setMaximumSize(300,25)
         quoridorLayout.addWidget(self.player2block, 16, 18)
+        quoridorLayout.setSizeConstraint(QLayout.SetFixedSize)
         self.startGame()
         
         self.setMouseTracking(True) #mouse 현재 위치 픽셀 계산
@@ -61,16 +67,15 @@ class QuoridorGame(QWidget):
         self.mouseYpos = 0
         x = pos.x()
         y = pos.y()
-        x -= 11
-        y -= 11
-        self.mouseXpos = int(x/43) #43을 조절해야함
-        self.mouseYpos = int(y/43) #43을 조절해야함 지금은 4k 기준 
-        text = f"x: {x+11}, y: {y+11}, gridx: {self.mouseXpos}, gridy: {self.mouseYpos}"
+
+        self.mouseXpos = (int(x/31)) #43을 조절해야함
+        self.mouseYpos = (int(y/31)) #43을 조절해야함 지금은 4k 기준 
         if self.mouseXpos<=16 and self.mouseYpos<=16:
             self.wallcheker(self.mouseXpos,self.mouseYpos)
         if D:
+            text = f"x: {x+11}, y: {y+11}, gridx: {self.mouseXpos}, gridy: {self.mouseYpos}"
             print(text)
- 
+
     def startGame(self):
         self.board = Board()
         self.turn = 2 # player1
@@ -191,13 +196,3 @@ if __name__ == '__main__':
     game = QuoridorGame()
     game.show()
     sys.exit(app.exec_())
-
-
-
-'''
-for x in range(17):
-        for y in range(17):
-            print(self.board.status[x][y],end=" ")
-        print("\n")
-    print("\n\n\n")
-''' 
