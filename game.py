@@ -3,13 +3,12 @@ from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import *
 from board import Board
 
-D = False
-
+D = True
 class QuoridorGame(QWidget):
 
     def __init__(self):
         super().__init__()
-        self.setGeometry(400, 500, 1000,700)
+        self.setGeometry(400, 500, 1000,700) # 조절해야함 4k 기준
         # init Layout
         quoridorLayout = QGridLayout()
         self.setLayout(quoridorLayout)
@@ -20,7 +19,7 @@ class QuoridorGame(QWidget):
             tmp_board = []
             for x in range(17):
                 tmp_button = QPushButton()
-                tmp_button.setMaximumSize(34,34) #boxsize 제한 34가 ui그리드에 딱 맞는 크기
+                tmp_button.setMaximumSize(34,34) #boxsize 제한 34가 ui그리드에 딱 맞는 크기 
                 tmp_button.clicked.connect(self.btnclick)
                 if y%2 or x%2:
                     tmp_button.setStyleSheet("background-color: gray")
@@ -64,9 +63,9 @@ class QuoridorGame(QWidget):
         y = pos.y()
         x -= 11
         y -= 11
-        self.mouseXpos = int(x/43)
-        self.mouseYpos = int(y/43)
-        text = "x: {0}, y: {1} ".format(self.mouseXpos, self.mouseYpos)
+        self.mouseXpos = int(x/43) #43을 조절해야함
+        self.mouseYpos = int(y/43) #43을 조절해야함 지금은 4k 기준 
+        text = f"x: {x+11}, y: {y+11}, gridx: {self.mouseXpos}, gridy: {self.mouseYpos}"
         if self.mouseXpos<=16 and self.mouseYpos<=16:
             self.wallcheker(self.mouseXpos,self.mouseYpos)
         if D:
@@ -126,7 +125,7 @@ class QuoridorGame(QWidget):
                 self.next_turn()
     
     
-    def wallcheker(self,x,y):  #벽을 놓을수 있는 공간에 색칠해주기
+    def wallcheker(self,x,y): 
         for i in range(17):
             for j in range(17):
                 if (i%2 or j%2) and self.board.status[i][j] == 0:     
