@@ -3,7 +3,7 @@ from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import *
 from board import Board
 
-D = True
+D = False
 class QuoridorGame(QWidget):
 
     def __init__(self):
@@ -13,7 +13,7 @@ class QuoridorGame(QWidget):
         quoridorLayout = QGridLayout()
         quoridorLayout.setSpacing(4)
         self.setLayout(quoridorLayout)
-
+        quoridorLayout.setContentsMargins(15, 15, 15, 15)
         # init board_button
         self.board_button = []
         for y in range(17):
@@ -66,17 +66,10 @@ class QuoridorGame(QWidget):
         
         self.mouseXpos = 0
         self.mouseYpos = 0
-        x = pos.x() - 10
-        y = pos.y() - 9
-        # x
-        # 0번째 2 ~ 29 1번째 30 ~ 58
-        # 8번째 233 ~ 261 16번째 465 ~ 493 
-
-        # y
-        # 0번 2 ~ 29 1번 30 ~ 56
-        # 16번 435 ~ 461
-        self.mouseXpos = (x//28) #43을 조절해야함
-        self.mouseYpos = (y//27) #43을 조절해야함 지금은 4k 기준 
+        x = pos.x() - 12
+        y = pos.y() - 12
+        self.mouseXpos = (x//29) #43을 조절해야함
+        self.mouseYpos = (y//29) #43을 조절해야함 지금은 4k 기준 
         if self.mouseXpos<=16 and self.mouseYpos<=16:
             self.wallcheker(self.mouseXpos,self.mouseYpos)
         if D:
