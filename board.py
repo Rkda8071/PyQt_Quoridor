@@ -75,13 +75,12 @@ class Board:
 
             if 2 <= self.status[yy][xx] <= 3:
                 #상대편의 말이 있다!
-                for i in range(4):
-                    yyy = yy + tmp[3-i]; xxx = xx + tmp[i]
-                    if not (yyy >= 0 and yyy < 17 and xxx >= 0 and xxx < 17 and self.status[yyy][xxx] == 0): continue
-                    yyy += tmp[3-i]; xxx += tmp[i]
-                    if yyy == y and xxx == x: continue
-                    self.status[yyy][xxx] = 4
-                    res.append((yyy,xxx))
+                yyy = yy + tmp[3-i]; xxx = xx + tmp[i]
+                if not (yyy >= 0 and yyy < 17 and xxx >= 0 and xxx < 17 and self.status[yyy][xxx] == 0): continue
+                yyy += tmp[3-i]; xxx += tmp[i]
+                if yyy == y and xxx == x: continue
+                self.status[yyy][xxx] = 4
+                res.append((yyy,xxx))
             else:
                 self.status[yy][xx] = 4
                 res.append((yy, xx))
@@ -96,4 +95,3 @@ class Board:
     def set_direction(self, dir): # 가로 : 0, 세로 : 1
         self.direction = dir
         pass
-
