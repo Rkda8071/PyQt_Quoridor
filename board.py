@@ -43,8 +43,8 @@ class Board:
         # 이동할 수 있는 경로가 막힙니다!
         return False
 
-    def bfs(self, y, x, e):
-        q = [(y, x)]
+    def bfs(self, sy, sx, e):
+        q = [(sy, sx)]
         tmp = [0,0,1,-1]
         chk = [[0]*17 for i in range(17)]
         while len(q) > 0:
@@ -54,8 +54,16 @@ class Board:
                 yy = y + tmp[i]
                 xx = x + tmp[3-i]
                 if not (yy >= 0 and yy < 17 and xx >= 0 and xx < 17 and self.status[yy][xx] == 0 and chk[yy+tmp[i]][xx+tmp[3-i]] == 0): continue
-                chk[yy+tmp[i]][xx+tmp[3-i]] = 1
-                q.append((yy+tmp[i],xx+tmp[3-i]))
+                if 2 <= self.status[yy+tmp[i]][xx+tmp[3-i]] <= 3 and not (yy+tmp[i] == sy and xx+tmp[3-i] == sx):
+                    yyy = yy + tmp[i]*2; xxx = xx + tmp[3-i]*2
+                    if not (yyy >= 0 and yyy < 17 and xxx >= 0 and xxx < 17 and self.status[yyy][xxx] == 0): continue
+                    yyy += tmp[i]; xxx += tmp[3-i]
+                    if (yyy == sy and xxx == sx) or chk[yyy][xxx] == 1: continue
+                    chk[yyy][xxx] = 1
+                    q.append((yyy,xxx))
+                else:
+                    chk[yy+tmp[i]][xx+tmp[3-i]] = 1
+                    q.append((yy+tmp[i],xx+tmp[3-i]))
             pass
         return False
 
